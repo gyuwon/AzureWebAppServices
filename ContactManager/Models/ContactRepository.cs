@@ -1,39 +1,28 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
+using System.Data.Entity;
+using System.Linq;
 
 namespace ContactManager.Models
 {
-    public class ContactRepository
+    public class ContactRepository : IDisposable
     {
-        private static int _lastId = 1;
+        private readonly ContactManagerDbContext _dbContext;
 
-        private static ConcurrentDictionary<int, Contact> _storage =
-            new ConcurrentDictionary<int, Contact>
-            {
-                [1] = new Contact
-                {
-                    Id = 1,
-                    FirstName = "Gyuwon",
-                    LastName = "Yi",
-                    Email = "gyuwon.yi@outlook.com"
-                }
-            };
-
-        public IEnumerable<Contact> GetAllContacts() => _storage.Values;
-
-        public Contact FindContact(int id)
+        public ContactRepository()
         {
-            Contact contact;
-            return _storage.TryGetValue(id, out contact) ? contact : null;
+            _dbContext = new ContactManagerDbContext();
         }
+
+        public IEnumerable<Contact> GetAllContacts() =>
+            _dbContext.Contacts.ToList();
+
+        public Contact FindContact(int id) => _dbContext.Contacts.Find(id);
 
         public void InsertContact(Contact contact)
         {
-            int id = Interlocked.Increment(ref _lastId);
-            _storage.TryAdd(id, contact);
-            contact.Id = id;
+            _dbContext.Contacts.Add(contact);
+            _dbContext.SaveChanges();
         }
 
         public bool UpdateContact(Contact contact)
@@ -41,9 +30,8 @@ namespace ContactManager.Models
             if (contact == null)
                 throw new ArgumentNullException(nameof(contact));
 
-            Contact value;
-            return _storage.TryGetValue(contact.Id, out value)
-                && _storage.TryUpdate(contact.Id, contact, value);
+            _dbContext.Entry(contact).State = EntityState.Modified;
+            return _dbContext.SaveChanges() > 0;
         }
 
         public bool DeleteContact(Contact contact)
@@ -51,7 +39,10 @@ namespace ContactManager.Models
             if (contact == null)
                 throw new ArgumentNullException(nameof(contact));
 
-            return _storage.TryRemove(contact.Id, out contact);
+            _dbContext.Entry(contact).State = EntityState.Deleted;
+            return _dbContext.SaveChanges() > 0;
         }
+
+        public void Dispose() => _dbContext.Dispose();
     }
 }

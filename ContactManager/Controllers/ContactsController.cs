@@ -94,5 +94,13 @@ namespace ContactManager.Controllers
                 return View();
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+                _repository.Dispose();
+        }
     }
 }
