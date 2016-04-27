@@ -10,10 +10,14 @@ namespace ContactManager.Tests.Functional
     [TestClass]
     public class AcceptanceTest
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public async Task ContactsRespondsOK()
         {
-            string appHost = "https://contactmanager-app.azurewebsites.net";
+            string appHost = TestContext.Properties["appHost"] as string;
+            if (string.IsNullOrWhiteSpace(appHost))
+                Assert.Inconclusive();
             string path = "/contacts";
             var uri = new Uri(new Uri(appHost), path);
             var httpClient = new HttpClient();

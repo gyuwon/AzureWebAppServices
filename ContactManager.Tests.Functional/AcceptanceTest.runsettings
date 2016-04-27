@@ -1,0 +1,5 @@
+﻿<RunSettings>
+  <TestRunParameters>
+    <Parameter name="appHost" value="https://contactmanager-app.azurewebsites.net" />
+  </TestRunParameters>
+</RunSettings>
