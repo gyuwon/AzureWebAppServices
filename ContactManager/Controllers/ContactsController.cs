@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using ContactManager.Models;
 
 namespace ContactManager.Controllers
@@ -8,8 +9,16 @@ namespace ContactManager.Controllers
         private readonly ContactRepository _repository;
 
         public ContactsController()
+            : this(new ContactRepository())
         {
-            _repository = new ContactRepository();
+        }
+
+        public ContactsController(ContactRepository repository)
+        {
+            if (repository == null)
+                throw new ArgumentNullException(nameof(repository));
+
+            _repository = repository;
         }
 
         // GET: Contacts

@@ -14,18 +14,19 @@ namespace ContactManager.Models
             _dbContext = new ContactManagerDbContext();
         }
 
-        public IEnumerable<Contact> GetAllContacts() =>
+        public virtual IEnumerable<Contact> GetAllContacts() =>
             _dbContext.Contacts.ToList();
 
-        public Contact FindContact(int id) => _dbContext.Contacts.Find(id);
+        public virtual Contact FindContact(int id) =>
+            _dbContext.Contacts.Find(id);
 
-        public void InsertContact(Contact contact)
+        public virtual void InsertContact(Contact contact)
         {
             _dbContext.Contacts.Add(contact);
             _dbContext.SaveChanges();
         }
 
-        public bool UpdateContact(Contact contact)
+        public virtual bool UpdateContact(Contact contact)
         {
             if (contact == null)
                 throw new ArgumentNullException(nameof(contact));
@@ -34,7 +35,7 @@ namespace ContactManager.Models
             return _dbContext.SaveChanges() > 0;
         }
 
-        public bool DeleteContact(Contact contact)
+        public virtual bool DeleteContact(Contact contact)
         {
             if (contact == null)
                 throw new ArgumentNullException(nameof(contact));
