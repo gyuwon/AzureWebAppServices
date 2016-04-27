@@ -215,6 +215,7 @@
     <Content Include="Views\Contacts\Edit.cshtml" />
     <Content Include="Views\Contacts\Delete.cshtml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
+    <None Include="Swap.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
